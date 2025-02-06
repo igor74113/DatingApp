@@ -20,7 +20,7 @@
 
 ## **Installation & Setup**
 
-### **1️⃣ Backend Setup**
+### ** 1. Backend Setup**
 ```sh
 cd src/backend
 python -m venv venv
@@ -33,7 +33,7 @@ Django API will be running at: **[`http://127.0.0.1:8000/`](http://127.0.0.1:800
 
 ---
 
-### **2️⃣ Frontend Setup**
+### **2️. Frontend Setup**
 ```sh
 cd ../frontend
 npm install
