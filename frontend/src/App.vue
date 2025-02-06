@@ -1,7 +1,12 @@
 <template>
-  <div id="app" class="bg-gray-100 min-h-screen">
+  <div
+    id="app"
+    class="bg-gray-100 min-h-screen"
+  >
     <header class="bg-blue-500 text-white text-center py-4">
-      <h1 class="text-xl font-bold">MedConnect</h1>
+      <h1 class="text-xl font-bold">
+        MedConnect
+      </h1>
     </header>
     
     <main class="pt-6">
@@ -10,7 +15,9 @@
     </main>
     
     <footer class="bg-gray-800 text-white text-center py-2">
-      <p class="text-sm">&copy; 2025 MedConnect. All rights reserved.</p>
+      <p class="text-sm">
+        &copy; 2025 MedConnect. All rights reserved.
+      </p>
     </footer>
   </div>
 </template>

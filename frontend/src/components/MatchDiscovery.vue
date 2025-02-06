@@ -1,37 +1,42 @@
 <template>
   <div class="h-screen bg-gray-100">
-    <div class="h-16 bg-white shadow flex items-center px-4">
-      <h1 class="text-xl font-bold">Discover Matches</h1>
-    </div>
-    <div class="flex flex-col items-center mt-6 space-y-4">
-      <!-- Profile card -->
-      <div class="w-72 h-96 bg-white shadow rounded-lg flex flex-col items-center justify-center">
-        <img src="/profile.jpg" alt="User Profile" class="w-32 h-32 rounded-full mb-4" />
-        <h3 class="text-lg font-semibold">Dr. Jane Doe</h3>
-        <p class="text-sm text-gray-500">Cardiologist, NY</p>
-      </div>
-
-      <!-- Like & Settings buttons -->
-      <div class="flex space-x-6">
-        <router-link
-          to="/chat"
-          class="w-16 h-16 bg-blue-500 text-white rounded-full shadow text-center flex items-center justify-center"
-        >
-          &#10084;
-        </router-link>
-        <router-link
-          to="/settings"
-          class="w-16 h-16 bg-gray-300 rounded-full shadow text-center flex items-center justify-center"
-        >
-          &#9881;
-        </router-link>
-      </div>
+    <h1 class="text-xl font-bold text-center">
+      Discover Matches
+    </h1>
+    <div
+      v-for="match in matches"
+      :key="match.id"
+      class="match-card"
+    >
+      <h3>{{ match.user2.username }}</h3>
+      <p>Score: {{ match.match_score }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import api from '@/api/api'; 
+
 export default {
-  name: "MatchDiscovery",
+  data() {
+    return { matches: [] };
+  },
+  mounted() {
+    this.fetchMatches();
+  },
+  methods: {
+    async fetchMatches() {
+      try {
+        const response = await api.get('matches/');
+        this.matches = response.data;
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    }
+  }
 };
 </script>
+
+<style>
+.match-card { background: white; padding: 10px; margin: 10px; border-radius: 5px; }
+</style>

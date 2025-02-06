@@ -1,8 +1,14 @@
 <!-- HomeScreen.vue -->
 <template>
   <div class="h-screen flex flex-col items-center justify-center bg-white">
-    <img src="@/assets/logo.png" alt="App Logo" class="w-24 mb-6" />
-    <h1 class="text-3xl font-bold text-gray-800 mb-12">Welcome to MedConnect</h1>
+    <img
+      src="@/assets/logo.png"
+      alt="App Logo"
+      class="w-24 mb-6"
+    >
+    <h1 class="text-3xl font-bold text-gray-800 mb-12">
+      Welcome to MedConnect
+    </h1>
     <div class="space-y-4">
       <router-link
         to="/login"
