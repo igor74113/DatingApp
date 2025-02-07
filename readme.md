@@ -1,4 +1,4 @@
-# **MedConnect**
+# **MedConnect** 
 
 ## **Tech Stack**
 
@@ -20,18 +20,16 @@
 
 ## **Installation & Setup**
 
-### ** 1. Backend Setup**
+### **1. Backend Setup**
+#### **Option 1: Using Pip (`requirements.txt`)**
 ```sh
 cd src/backend
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
-```
-Django API will be running at: **[`http://127.0.0.1:8000/`](http://127.0.0.1:8000/)**
 
----
 
 ### **2️. Frontend Setup**
 ```sh
@@ -40,7 +38,7 @@ npm install
 npm run serve
 ```
 
----
+### Notes for production 
 
 ## **Environment Variables**
 Create a **`.env`** file inside the `backend/` directory to store secrets:

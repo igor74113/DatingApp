@@ -1,3 +1,4 @@
+# this folder contains django apps configurations 
 from django.apps import AppConfig
 
 
