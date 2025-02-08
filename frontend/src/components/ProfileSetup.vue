@@ -48,8 +48,8 @@ export default {
       } catch (error) {
         console.error("Error fetching profile:", error);
         if (error.response && error.response.status === 401) {
-          alert("You must log in first!");
-          this.router.push('/login');  // Redirect to login if unauthorized
+        alert("You must log in first!");
+        this.router.push('/login');
         }
       }
     },

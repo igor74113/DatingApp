@@ -1,42 +1,42 @@
 <template>
-  <div class="h-screen bg-gray-100">
-    <h1 class="text-xl font-bold text-center">
+  <div class="h-screen bg-gray-100 p-4">
+    <h1 class="text-xl font-bold text-center mb-4">
       Discover Matches
     </h1>
-    <div
-      v-for="match in matches"
-      :key="match.id"
-      class="match-card"
-    >
-      <h3>{{ match.user2.username }}</h3>
-      <p>Score: {{ match.match_score }}</p>
+    
+    <div v-if="matches.length">
+      <div v-for="match in matches" :key="match.id" class="match-card">
+        <h3 class="text-lg font-semibold">{{ match.username }}</h3>
+        <p class="text-gray-700">Score: <strong>{{ match.score }}</strong></p>
+      </div>
     </div>
+    
+    <p v-else class="text-center text-gray-500">No matches found.</p>
   </div>
 </template>
 
-<script>
-import api from '@/api/api'; 
+<script setup>
+import { ref, onMounted } from 'vue';
+import { fetchMatches } from '@/api/api';
 
-export default {
-  data() {
-    return { matches: [] };
-  },
-  mounted() {
-    this.fetchMatches();
-  },
-  methods: {
-    async fetchMatches() {
-      try {
-        const response = await api.get('matches/');
-        this.matches = response.data;
-      } catch (error) {
-        console.error("Error fetching matches:", error);
-      }
-    }
+const matches = ref([]);
+
+onMounted(async () => {
+  try {
+    matches.value = await fetchMatches();
+  } catch (error) {
+    console.error("Error fetching matches:", error);
   }
-};
+});
 </script>
 
-<style>
-.match-card { background: white; padding: 10px; margin: 10px; border-radius: 5px; }
+
+<style scoped>
+.match-card {
+  background: white;
+  padding: 12px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
 </style>
