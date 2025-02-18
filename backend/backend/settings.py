@@ -11,16 +11,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+    
+
+load_dotenv()  # Load environment variables from .env file
+# Add environemtal variable SECRET_KEY for production. If not found, deafaut to development key which need to be removed for production
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-^5!etn2w1=78e4cyn#j(vu48l-dc!tlyht*6##+7m-qz5z-uzm")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-^5!etn2w1=78e4cyn#j(vu48l-dc!tlyht*6##+7m-qz5z-uzm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -63,10 +64,10 @@ CORS_ALLOWED_ORIGINS = [
 
 # REST Framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10  # Default page size for all views
 }
+
 ROOT_URLCONF = "backend.urls"
 
 TEMPLATES = [

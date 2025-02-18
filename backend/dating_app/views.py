@@ -2,9 +2,23 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes  
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import User, Profile, Match, Message
+from dating_app.models import User, Profile, Match, Message
 from dating_app.serializers import UserSerializer, ProfileSerializer, MatchSerializer, MessageSerializer
 from dating_app.services.matching import find_best_matches
+from rest_framework.pagination import PageNumberPagination
+from dating_app.models import Match
+from rest_framework import viewsets
+
+class MatchPagination(PageNumberPagination):
+    page_size = 10  # Default number of items per page
+    page_size_query_param = 'page_size'  # Allow clients to specify page size
+    max_page_size = 50  # Limit the maximum page size
+
+class MatchViewSet(viewsets.ModelViewSet):
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = MatchPagination 
 
 # User API ViewSet
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,10 +33,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 # Match API ViewSet
+class MatchPagination(PageNumberPagination):
+    page_size = 10  # Number of matches per page
+    page_size_query_param = 'page_size'  # Allows frontend to specify page size
+    max_page_size = 50  # Prevents excessive data requests
+
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.select_related('user1', 'user2').all()
     serializer_class = MatchSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = MatchPagination  # Apply pagination here
+
 
 # Message API ViewSet
 class MessageViewSet(viewsets.ModelViewSet):

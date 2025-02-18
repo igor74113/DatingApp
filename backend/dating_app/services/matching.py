@@ -1,4 +1,5 @@
 # Mathmaking algorithm based on preferences 
+
 def calculate_match_score(user, candidate):
     """
     Computes a compatibility score between two users.
@@ -16,11 +17,11 @@ def calculate_match_score(user, candidate):
     return min(score, 100)
 
 def find_best_matches(user):
-    from dating_app.models import UserProfile  # Lazy import
+    from dating_app.models import Profile  # Lazy import
     """
     Returns a list of best-matching candidates for the given user.
     """
-    candidates = UserProfile.objects.exclude(id=user.id)
+    candidates = Profile.objects.exclude(id=user.id)
     matches = []
     for candidate in candidates:
         match_score = calculate_match_score(user, candidate)
