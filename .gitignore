@@ -1,0 +1,11 @@
+# General OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE settings globally
+.vscode/
+.idea/
+*.iml
+
+# Ignore Docker files (if applicable)
+docker-compose.override.yml
