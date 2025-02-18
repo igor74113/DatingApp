@@ -1,4 +1,4 @@
-# **MedConnect** 
+# **Health-focused Dating Platform** 
 
 ## **Tech Stack**
 
