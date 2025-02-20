@@ -1,6 +1,8 @@
 # Create models here and register in admin.py
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -34,7 +36,14 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} Profile"
 
-class Match(models.Model):
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('accepted', 'Accepted'),
