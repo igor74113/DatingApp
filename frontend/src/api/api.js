@@ -23,6 +23,7 @@ export const fetchMatches = async () => {
     return response.data.matches;  // Return only matches array
   } catch (error) {
     console.error('Error fetching matches:', error);
+    alert('Failed to fetch matches. Please try again later.');
     return [];
   }
 };
