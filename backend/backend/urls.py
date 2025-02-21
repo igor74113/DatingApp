@@ -41,9 +41,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # User Registration endpoint
-    path('api/register/', register_user, name='register_user'),
+    path('register/', register_user, name='register'),
     
-    # API Endpoints from the router
+    # User Login endpoint
+    path('login/', include('django.contrib.auth.urls'), name='login'),
     path('api/', include(router.urls)),
     
     # Custom endpoint for user matches (renamed to avoid conflict)
