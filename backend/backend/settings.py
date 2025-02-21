@@ -162,4 +162,4 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,  # Ensure this matches the SECRET_KEY used for signing
     "AUTH_HEADER_TYPES": ("Bearer",),  # Ensure Bearer token is used
 }
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = True
