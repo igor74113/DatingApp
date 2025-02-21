@@ -30,7 +30,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
         return self.queryset
 
 # View to Handle Registration
+from rest_framework.permissions import AllowAny
+
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_user(request):
     serializer = UserProfileSerializer(data=request.data)
     if serializer.is_valid():
