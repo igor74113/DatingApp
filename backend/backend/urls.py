@@ -7,7 +7,7 @@ from drf_yasg.views import get_schema_view as yasg_schema_view
 from drf_yasg import openapi
 from dating_app.views import (
     register_user, UserViewSet, ProfileViewSet, MatchViewSet, MessageViewSet, 
-    current_user, get_user_matches, home_view
+    current_user, get_user_matches, home_view, recommendations_view, edit_profile  
 )
 
 # Define API router for ViewSets
@@ -34,33 +34,30 @@ swagger_schema_view = yasg_schema_view(
 )
 
 urlpatterns = [
-    # User-facing GUI: renders home_view (the user interface)
+    # User-facing GUI pages
     path('', home_view, name='home'),
-    
-    # Django Admin interface
+    path('recommendations/', recommendations_view, name='recommendations'),  
+
+    # Authentication
     path('admin/', admin.site.urls),
-    
-    # User Registration endpoint
     path('register/', register_user, name='register'),
-    
-    # User Login endpoint
-    path('login/', include('django.contrib.auth.urls'), name='login'),
+    path('accounts/', include('django.contrib.auth.urls')),  
+
+    # API Endpoints
     path('api/', include(router.urls)),
-    
-    # Custom endpoint for user matches (renamed to avoid conflict)
     path('api/user-matches/', get_user_matches, name='get-matches'),
-    
-    # Authentication Endpoints for JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    
-    # Endpoint for fetching current authenticated user info
     path('api/current-user/', current_user, name='current-user'),
     
-    # API Documentation endpoints
+    # API Documentation
     path('api/schema/', schema_view, name='openapi-schema'),
     path('api/docs/', swagger_schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+    
+    # Profile Editing
+    path("profile/edit/", edit_profile, name="edit-profile"), 
 ]
+
 from django.conf import settings
 from django.conf.urls.static import static
 

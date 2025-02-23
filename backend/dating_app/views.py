@@ -1,24 +1,21 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes  
 from rest_framework.response import Response
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
-from dating_app.models import User, Profile, Match, Message
+from dating_app.models import User, Profile, Match, Message  
 from dating_app.serializers import (
-    UserProfileSerializer, UserSerializer, ProfileSerializer, 
+    UserProfileSerializer, UserSerializer, ProfileSerializer,  
     MatchSerializer, MessageSerializer
 )
 from dating_app.services.matching import find_best_matches
 
-# User-facing GUI view: renders the home page
-def home_view(request):
-    context = {"welcome_message": "Welcome to our Dating App!"}
-    return render(request, 'dating_app/home.html', context)
-
-# Profile API ViewSet
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(viewsets.ModelViewSet):  
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -29,17 +26,49 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return self.queryset.filter(user__id=user_id)
         return self.queryset
 
+from dating_app.models import User, Profile, Match, Message
+from dating_app.serializers import (
+    UserProfileSerializer, UserSerializer, ProfileSerializer, 
+    MatchSerializer, MessageSerializer
+)
+from dating_app.services.matching import find_best_matches
+
+@login_required
+def recommendations_view(request):
+    """
+    Displays the recommendations page after login.
+    """
+    user_profile, _ = Profile.objects.get_or_create(user=request.user)
+    matches = find_best_matches(user_profile)
+
+    return render(request, 'dating_app/recommendations.html', {
+        "user": request.user,
+        "matches": [{"username": m["user"].username, "score": m["score"]} for m in matches] if matches else []
+    })
+
+# User-facing GUI view: renders the home page
+def home_view(request):
+    context = {"welcome_message": "Welcome to our Dating App!"}
+    return render(request, 'dating_app/home.html', context)
+
 # View to Handle Registration
 from rest_framework.permissions import AllowAny
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    serializer = UserProfileSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        return Response({"message": "User registered successfully!", "user_id": user.id}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)  # Use custom form
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Auto-login user after registration
+            return redirect("recommendations")  # Redirect to recommendations page
+
+        return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Handle GET request - render the registration form
+    form = CustomUserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 # User API ViewSet
 class UserViewSet(viewsets.ModelViewSet):
@@ -90,3 +119,44 @@ def get_user_matches(request):
     return Response({
         'matches': [{'id': m['user'].id, 'username': m['user'].username, 'score': m['score']} for m in matches]
     })
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from dating_app.models import User
+
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User  
+        fields = ("username", "email", "password1", "password2")
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from dating_app.models import Profile
+from dating_app.serializers import ProfileSerializer
+from django import forms
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["age", "gender", "location", "job_title", "specialty", "compatibility_score"]
+
+@login_required
+def edit_profile(request):
+    """
+    Allows users to edit their profile information.
+    """
+    user_profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect("recommendations")  
+    else:
+        form = ProfileForm(instance=user_profile)
+
+    return render(request, "dating_app/edit_profile.html", {"form": form})
